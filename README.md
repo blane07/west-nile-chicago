@@ -1,5 +1,5 @@
 # Preventing West Nile in Chicago
-![alt text](https://github.com/west-nile.png)
+![alt text](https://github.com/west-nile-chicago/west-nile.png)
 ### Planning
 *Team:  Evan, Lawrence, Moises, Brendan*
 
