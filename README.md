@@ -1,5 +1,5 @@
 # Preventing West Nile in Chicago
-![alt text](https://github.com/west-nile-chicago/west-nile.png)
+![alt text](https://images.medicinenet.com//images/slideshow/west-nile-virus-s1a-photo-of-tem-and-culex-mosquito.jpg "West Nile")
 ### Planning
 *Team:  Evan, Lawrence, Moises, Brendan*
 
