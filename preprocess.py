@@ -41,6 +41,15 @@ imputer=Imputer(missing_values="NaN",strategy='median',axis=0)
 imputer=imputer.fit(weather.iloc[:,[4,7,8,9,16,17,18,21]])
 weather.iloc[:,[4,7,8,9,16,17,18,21]]=imputer.transform(weather.iloc[:,[4,7,8,9,16,17,18,21]])
 
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+clean_weather['Date']=pd.to_datetime(clean_weather['Date'])
+clean_weather['hour']=clean_weather['Date'].dt.hour
+clean_weather['day']=clean_weather['Date'].dt.day
+clean_weather['month']=clean_weather['Date'].dt.month
+clean_weather['year']=clean_weather['Date'].dt.year
+labelencoder_X=LabelEncoder()
+clean_weather['CodeSum_lbr']=labelencoder_X.fit_transform(clean_weather['CodeSum'])
+
 import os
 file_path='C:\\Users\\moisessalazar77\\Desktop\\projectpics\\proj3'
 weather.to_csv(os.path.join(file_path,'clean_weather.csv'),encoding='utf-8-sig',index=False)
