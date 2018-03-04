@@ -5,6 +5,7 @@ Created on Sun Mar  4 13:05:39 2018
 @author: moisessalazar77
 """
 import pandas as pd
+import numpy as np
 import os
 
 dir_path='C:\\Users\\moisessalazar77\\Desktop\\proj4'
@@ -18,11 +19,14 @@ spray['Time']=pd.to_datetime(spray['Time']).dt.strftime('%H:%M:%S')
 spray['Time']=spray['Time'].astype(str)
 spray['Time']=spray['Time'].str.replace(':','')
 spray['Time']=pd.to_numeric(spray['Time'],downcast='integer',errors='coerce')
+median_time=np.nanmedian(spray['Time'])
+spray['Time'].fillna(median_time, inplace=True)
 
 sample_2011=spray[spray.year == 2011].sample(1472)
 sample_2013=spray[spray.year == 2013].sample(1472)
 
 spray_rsh= pd.concat([sample_2011,sample_2013], ignore_index=True)
+
 
 spray_rsh.rename(columns={'Date':'Date_spry','year':'year_spry',
                       'month':'month_spry',
@@ -31,7 +35,8 @@ spray_rsh.rename(columns={'Date':'Date_spry','year':'year_spry',
                       'Longitude':'Longitude_spry',
                       'Time':'Time_spry'}, inplace=True)
 
-spray_rsh.to_csv(os.path.join(dir_path,'preprocessed-spray.csv'),encoding='utf-8-sig',index=False)
+spray_rsh.to_csv(os.path.join(dir_path,'preprocessed_spray.csv'),encoding='utf-8-sig',index=False)
+
 
 
 

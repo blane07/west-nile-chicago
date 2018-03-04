@@ -39,6 +39,7 @@ train_rsh['Address_lb']=le.fit_transform(train_rsh['AddressNumberAndStreet'])
 
 train_rsh.rename(columns={'Date':'Date_trn',                         
                       'month':'month_trn',
+                      'year':'year_trn',
                       'day':'day_trn',
                       'Latitude':'Latitude_trn',
                       'Longitude':'Longitude_trn'}

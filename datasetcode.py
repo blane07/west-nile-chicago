@@ -1,13 +1,83 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar  1 18:31:45 2018
+Created on Sun Mar  4 15:55:46 2018
 
 @author: moisessalazar77
 """
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+
+dir_path='C:\\Users\\moisessalazar77\\Desktop\\proj4'
+spray=pd.read_csv(os.path.join(dir_path,'spray.csv'))
+
+spray['Date']=pd.to_datetime(spray['Date'])
+spray['day']=spray['Date'].dt.day
+spray['month']=spray['Date'].dt.month
+spray['year']=spray['Date'].dt.year
+spray['Time']=pd.to_datetime(spray['Time']).dt.strftime('%H:%M:%S')
+spray['Time']=spray['Time'].astype(str)
+spray['Time']=spray['Time'].str.replace(':','')
+spray['Time']=pd.to_numeric(spray['Time'],downcast='integer',errors='coerce')
+median_time=np.nanmedian(spray['Time'])
+spray['Time'].fillna(median_time, inplace=True)
+
+
+sample_2011=spray[spray.year == 2011].sample(1472)
+sample_2013=spray[spray.year == 2013].sample(1472)
+
+spray_rsh= pd.concat([sample_2011,sample_2013], ignore_index=True)
+
+
+spray_rsh.rename(columns={'Date':'Date_spry','year':'year_spry',
+                      'month':'month_spry',
+                      'day':'day_spry',
+                      'Latitude':'Latitude_spry',
+                      'Longitude':'Longitude_spry',
+                      'Time':'Time_spry'}, inplace=True)
+
+spray_rsh.to_csv(os.path.join(dir_path,'preprocessed_spray.csv'),encoding='utf-8-sig',index=False)
+
+dir_path='C:\\Users\\moisessalazar77\\Desktop\\proj4'
+train=pd.read_csv(os.path.join(dir_path,'train.csv'))
+
+train['Date']=pd.to_datetime(train['Date'])
+train['day']=train['Date'].dt.day
+train['month']=train['Date'].dt.month
+train['year']=train['Date'].dt.year
+
+sample_2007=train[train.year == 2007].sample(736)
+sample_2009=train[train.year == 2009].sample(736)
+sample_2011=train[train.year == 2011].sample(736)
+sample_2013=train[train.year == 2013].sample(736)
+
+Merged1= pd.concat([sample_2007,sample_2009], ignore_index=True)
+Merged2= pd.concat([Merged1,sample_2011], ignore_index=True)
+train_rsh= pd.concat([Merged2,sample_2013], ignore_index=True)
+
+
+train_rsh['Street_effect']=train_rsh['AddressNumberAndStreet']
+train_rsh['Street_effect'] = (train_rsh.groupby('Street')['Street'].transform('count')>1).astype(int)
+
+#labeling text columns
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+train_rsh['Species_lb']=le.fit_transform(train_rsh['Species'])  
+train_rsh['Address_lb']=le.fit_transform(train_rsh['AddressNumberAndStreet']) 
+
+train_rsh.rename(columns={'Date':'Date_trn',                         
+                      'month':'month_trn',
+                      'year':'year_trn',
+                      'day':'day_trn',
+                      'Latitude':'Latitude_trn',
+                      'Longitude':'Longitude_trn'}
+                        , inplace=True)
+
+train_rsh.to_csv(os.path.join(dir_path,'preprocessed_train.csv'),encoding='utf-8-sig',index=False)
+
+
 
 dir_path='C:\\Users\\moisessalazar77\\Desktop\\proj4'
 weather=pd.read_csv(os.path.join(dir_path,'weather.csv'))
@@ -77,19 +147,7 @@ weather.rename(columns={'Date':'Date_wthr',
 weather.to_csv(os.path.join(dir_path,'preprocessed_weather.csv'),encoding='utf-8-sig',index=False)
 
 
-#fea-eng
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+merge1 = pd.concat([spray_rsh.reset_index(), train_rsh.reset_index()], axis=1)
+Dataset = pd.concat([merge1.reset_index(), weather.reset_index()], axis=1)
+Dataset.to_csv(os.path.join(dir_path,'WnV2.csv'),encoding='utf-8-sig',index=False)
 
