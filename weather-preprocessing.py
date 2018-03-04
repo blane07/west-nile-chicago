@@ -52,6 +52,20 @@ weather.iloc[:,[4,7,8,9,16,17,18,21]]=imputer.transform(weather.iloc[:,[4,7,8,9,
 from sklearn.preprocessing import LabelEncoder
 le=LabelEncoder()
 weather['CodeSum_lb']=le.fit_transform(weather['CodeSum'])  
+
+#Feature engineer
+weather['Tmax:Tmin:Sunst']=(weather['Tmax']-weather['Tmin'])*(weather['Sunset'])
+weather['Tavg:WB']=(weather['Tavg'])*(weather['WetBulb'])
+weather['Hot_web']=(weather['Tmax'])*(weather['PrecipTotal'])
+weather['DP:Tmin']=(weather['DewPoint'])*(weather['Tmin'])
+weather['P:sea:WB']=((weather['StnPressure'])/(weather['SeaLevel']))*(weather['WetBulb'])
+weather['T_diff']=((41>(weather['Tmax']-weather['Tmin']))&((weather['Tmax']-weather['Tmin']>21))).astype(int)
+weather['Dry']=(weather['WetBulb']>53).astype(int)
+weather['Dry_Wet_Diff'] =(weather['DewPoint']-weather['WetBulb']>5).astype(int)
+weather['month_cat']=(7>(weather['month'])&((weather['month']>9))).astype(int)
+weather['DewPoint:Sunrise']=(weather['DewPoint'])*(weather['Sunsise'])
+
+
 colsToDrop = ['CodeSum','Depart','Water1']
 weather.drop(colsToDrop, axis=1,inplace=True)
 
