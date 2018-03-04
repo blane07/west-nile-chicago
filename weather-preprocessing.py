@@ -27,20 +27,20 @@ weather['SeaLevel']=pd.to_numeric(weather['SeaLevel'],errors='coerse')
 weather['StnPressure']=pd.to_numeric(weather['StnPressure'],errors='coerse')
 weather['AvgSpeed']=pd.to_numeric(weather['AvgSpeed'],errors='coerse')
 weather['Date']=pd.to_datetime(weather['Date'])
-weather['hour']=weather['Date'].dt.hour
 weather['day']=weather['Date'].dt.day
 weather['month']=weather['Date'].dt.month
 weather['year']=weather['Date'].dt.year
 
 #only one station is recording the sunrise/sunset therefore the right value is propagated
 weather['Sunrise']=weather['Sunrise'].fillna(method='ffill')
-weather['Sunset']=weather['Sunrise'].fillna(method='ffill')
+weather['Sunset']=weather['Sunset'].fillna(method='ffill')
 weather['Depth']=pd.to_numeric(weather['Depth'],errors='coerse')
 weather['Depth']=weather['Depth'].fillna(method='ffill')
 weather['SnowFall']=pd.to_numeric(weather['SnowFall'],errors='coerse')
 weather['SnowFall']=weather['SnowFall'].fillna(method='ffill')
 weather['PrecipTotal']=weather['PrecipTotal'].str.replace('T','0.01')
 weather['PrecipTotal']=pd.to_numeric(weather['PrecipTotal'],errors='coerse')
+                   
 
 #fill the mixing spots with the median, some were originally in the file others created after type conversion
 from sklearn.preprocessing import Imputer
@@ -53,7 +53,7 @@ from sklearn.preprocessing import LabelEncoder
 le=LabelEncoder()
 weather['CodeSum_lb']=le.fit_transform(weather['CodeSum'])  
 
-#Feature engineer
+#Feature engineering
 weather['Tmax:Tmin:Sunst']=(weather['Tmax']-weather['Tmin'])*(weather['Sunset'])
 weather['Tavg:WB']=(weather['Tavg'])*(weather['WetBulb'])
 weather['Hot_web']=(weather['Tmax'])*(weather['PrecipTotal'])
@@ -63,13 +63,18 @@ weather['T_diff']=((41>(weather['Tmax']-weather['Tmin']))&((weather['Tmax']-weat
 weather['Dry']=(weather['WetBulb']>53).astype(int)
 weather['Dry_Wet_Diff'] =(weather['DewPoint']-weather['WetBulb']>5).astype(int)
 weather['month_cat']=(7>(weather['month'])&((weather['month']>9))).astype(int)
-weather['DewPoint:Sunrise']=(weather['DewPoint'])*(weather['Sunsise'])
+weather['DewPoint:Sunrise']=(weather['DewPoint'])*(weather['Sunrise'])
 
 
-colsToDrop = ['CodeSum','Depart','Water1']
+colsToDrop = ['Depart','Water1']
 weather.drop(colsToDrop, axis=1,inplace=True)
 
-weather.to_csv(os.path.join(dir_path,'clean_weather6.csv'),encoding='utf-8-sig',index=False)
+weather.rename(columns={'Date':'Date_wthr',
+                       'year':'year_wthr',
+                       'month':'month_wthr',
+                       'day':'day_wthr',}, inplace=True)
+
+weather.to_csv(os.path.join(dir_path,'preprocessed_weather.csv'),encoding='utf-8-sig',index=False)
 
 
 #fea-eng
