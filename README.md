@@ -1,5 +1,9 @@
 # West Nile Virus (WNV) in Chicago
+
+Brendan Lane, Moises Salazar, Lawrence Njume, and Evan Kranzler
+
 ![alt text](https://images.medicinenet.com//images/slideshow/west-nile-virus-s1a-photo-of-tem-and-culex-mosquito.jpg "West Nile")
+
 West Nile Virus has been in Chicago for years. How can we help the city? Chicago has collected data on the following:
 * Mosquito traps
 * Weather
